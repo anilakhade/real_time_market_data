@@ -1,0 +1,7 @@
+/tests/config.json
+build/
+*.o
+*.a
+*.exe
+*.log
+compile_commands.json
