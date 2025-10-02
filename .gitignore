@@ -1,7 +1,38 @@
-/tests/config.json
-build/
-*.o
-*.a
-*.exe
+# Build
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/build/*    # extra safety
+/compile_commands.json
+libalpha_lib.a
+/*.o
+
+# CMake generated
+cmake_install.cmake
+
+# caches
+/.cache/
+*.idx
+
+# Tests
+/tests/*.out
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / config
+config.json
+config/*.json
+*.secret
+*.pem
+*.key
+
+# Logs
 *.log
-compile_commands.json
+
