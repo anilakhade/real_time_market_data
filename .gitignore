@@ -2,19 +2,15 @@
 /build/
 /CMakeFiles/
 /CMakeCache.txt
-/build/*    # extra safety
 /compile_commands.json
 libalpha_lib.a
+cmake_install.cmake
 /*.o
 
-# CMake generated
-cmake_install.cmake
+# caches (clangd, etc)
+.cache/
 
-# caches
-/.cache/
-*.idx
-
-# Tests
+# Tests / outputs
 /tests/*.out
 
 # IDE / editor
