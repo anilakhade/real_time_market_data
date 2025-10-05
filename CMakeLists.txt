@@ -17,6 +17,8 @@ add_library(alpha_lib
     src/totp.cpp
     src/websocket_client.cpp
     src/subscription_manager.cpp
+    src/ingest_queue.cpp
+    src/parser.cpp
 )
 target_include_directories(alpha_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(alpha_lib
@@ -48,3 +50,8 @@ target_link_libraries(websocket_client_test PRIVATE alpha_lib)
 add_executable(subscription_manager_test tests/subscription_manager_test.cpp)
 target_link_libraries(subscription_manager_test PRIVATE alpha_lib)
 
+add_executable(ingest_queue_test tests/ingest_queue_test.cpp)
+target_link_libraries(ingest_queue_test PRIVATE alpha_lib)
+
+add_executable(parser_test tests/parser_test.cpp)
+target_link_libraries(parser_test PRIVATE alpha_lib)
