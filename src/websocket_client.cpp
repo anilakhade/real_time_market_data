@@ -110,23 +110,31 @@ struct WebSocketClient::Impl {
         }
     }
 
+
     void read_loop() {
-        beast::flat_buffer buffer;
-        while (running.load()) {
-            try {
-                buffer.clear();
-                ws->read(buffer);
-                if (on_msg) on_msg(beast::buffers_to_string(buffer.data()));
-            } catch (const std::exception& e) {
-                log.warn(std::string("[ws] read error: ") + e.what());
+    beast::flat_buffer buffer;
+    while (running.load()) {
+        beast::error_code ec;
+        buffer.clear();
+        ws->read(buffer, ec);
+        if (ec) {
+            if (!running.load()) break; // stopping → exit silently
+            if (ec == websocket::error::closed || ec == asio::error::operation_aborted) {
                 connected.store(false);
-                if (!running.load()) break;
-                notify_state("reconnecting");
-                reconnect_loop();
-                break; // reconnect_loop re-enters read_loop() after success
+                notify_state("closed");
+                break; // graceful close
             }
+            log.warn(std::string("[ws] read error: ") + ec.message());
+            connected.store(false);
+            notify_state("reconnecting");
+            reconnect_loop();
+            break; // reconnect_loop will re-enter on success
         }
+        if (on_msg) on_msg(beast::buffers_to_string(buffer.data()));
     }
+}
+
+
 
     void reconnect_loop() {
         auto backoff = opts.backoff_initial;
@@ -152,15 +160,18 @@ struct WebSocketClient::Impl {
     }
 
     void stop() {
-        running.store(false);
-        try {
-            if (ws && connected.load()) {
-                beast::error_code ec;
-                ws->close(websocket::close_code::normal, ec);
-            }
-        } catch (...) {}
+    running.store(false);
+    if (ws) {
+        beast::error_code ec;
+        // Request a normal WS close (this will make read() return with error::closed)
+        ws->close(websocket::close_code::normal, ec);
+        // Cancel any pending low-level ops and shutdown TCP
+        beast::get_lowest_layer(*ws).socket().cancel(ec);
+        beast::get_lowest_layer(*ws).socket().shutdown(tcp::socket::shutdown_both, ec);
+        }
         ioc.stop();
     }
+
 };
 
 // ---- public API ----

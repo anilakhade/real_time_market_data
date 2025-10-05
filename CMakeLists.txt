@@ -16,6 +16,7 @@ add_library(alpha_lib
     src/auth.cpp
     src/totp.cpp
     src/websocket_client.cpp
+    src/subscription_manager.cpp
 )
 target_include_directories(alpha_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(alpha_lib
@@ -43,3 +44,7 @@ target_link_libraries(totp_test PRIVATE alpha_lib)
 
 add_executable(websocket_client_test tests/websocket_client_test.cpp)
 target_link_libraries(websocket_client_test PRIVATE alpha_lib)
+
+add_executable(subscription_manager_test tests/subscription_manager_test.cpp)
+target_link_libraries(subscription_manager_test PRIVATE alpha_lib)
+
