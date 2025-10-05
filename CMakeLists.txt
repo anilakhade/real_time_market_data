@@ -19,6 +19,8 @@ add_library(alpha_lib
     src/subscription_manager.cpp
     src/ingest_queue.cpp
     src/parser.cpp
+    src/ltp_store.cpp
+    src/consumer.cpp 
 )
 target_include_directories(alpha_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(alpha_lib
@@ -55,3 +57,6 @@ target_link_libraries(ingest_queue_test PRIVATE alpha_lib)
 
 add_executable(parser_test tests/parser_test.cpp)
 target_link_libraries(parser_test PRIVATE alpha_lib)
+
+add_executable(consumer_test tests/consumer_test.cpp)
+target_link_libraries(consumer_test PRIVATE alpha_lib)
