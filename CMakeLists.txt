@@ -8,11 +8,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(nlohmann_json REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-# library
+# Core library
 add_library(alpha_lib
     src/config.cpp
     src/logger.cpp
     src/http_client.cpp
+    src/auth.cpp
+    src/totp.cpp
+    src/websocket_client.cpp
 )
 target_include_directories(alpha_lib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(alpha_lib
@@ -22,16 +25,21 @@ target_link_libraries(alpha_lib
         OpenSSL::Crypto
 )
 
-# tests
+# Tests
 add_executable(cfg_test tests/cfg_test.cpp)
-target_link_libraries(cfg_test PRIVATE alpha_lib nlohmann_json::nlohmann_json)
-target_include_directories(cfg_test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(cfg_test PRIVATE alpha_lib)
 
 add_executable(logger_test tests/logger_test.cpp)
-target_link_libraries(logger_test PRIVATE alpha_lib nlohmann_json::nlohmann_json)
-target_include_directories(logger_test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(logger_test PRIVATE alpha_lib)
 
 add_executable(http_client_test tests/http_client_test.cpp)
-target_link_libraries(http_client_test PRIVATE alpha_lib nlohmann_json::nlohmann_json)
-target_include_directories(http_client_test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(http_client_test PRIVATE alpha_lib)
 
+add_executable(auth_test tests/auth_test.cpp)
+target_link_libraries(auth_test PRIVATE alpha_lib)
+
+add_executable(totp_test tests/totp_test.cpp)
+target_link_libraries(totp_test PRIVATE alpha_lib)
+
+add_executable(websocket_client_test tests/websocket_client_test.cpp)
+target_link_libraries(websocket_client_test PRIVATE alpha_lib)
